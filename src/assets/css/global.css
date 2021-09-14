@@ -1,0 +1,44 @@
+/* 全局样式表 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,
+body,
+#app {
+  width: 100%;
+  margin: 0;
+
+}
+
+@font-face {
+  font-family: 'title-speed';
+  src: url(../font/font-family/Delicious-Choice-1.ttf);
+}
+@font-face {
+  font-family: 'HanYiBaiQiTiJian';
+  src: url(../font/font-family/SunXiaoSongXiaFenTi-2.otf);
+}
+@font-face {
+  font-family: 'HARRINGT';
+  src: url(../font/font-family/HARRINGT-2.ttf);
+}
+
+.el-breadcrumb {
+  margin-bottom: 15px;
+  font-size: 12px;
+}
+
+.el-card {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
+}
+
+.el-table {
+  margin-top: 15px;
+  font-size: 12px;
+}
+
+.el-pagination {
+  margin-top: 15px;
+}
