@@ -19,8 +19,7 @@ module.exports = {
     path: config.build.assetsRoot,
     filename: '[name].js',
     publicPath: process.env.NODE_ENV === 'production' ?
-      config.build.assetsPublicPath :
-      config.dev.assetsPublicPath
+      config.build.assetsPublicPath : config.dev.assetsPublicPath
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -29,6 +28,7 @@ module.exports = {
       '@': resolve('src'),
     }
   },
+
   module: {
     rules: [{
         test: /\.vue$/,
@@ -69,6 +69,11 @@ module.exports = {
         loader: "style-loader!css-loader!less-loader",
       }
     ]
+  },
+  
+  externals: {
+    'AMap': 'AMap',
+    'AMapUI': 'AMapUI'
   },
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue

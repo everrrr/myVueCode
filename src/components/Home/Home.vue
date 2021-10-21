@@ -1,9 +1,9 @@
-
 <template>
   <div class="home-main">
-    <div class="v-over" :class="{ hide: isOver }" @click="overClick"></div>
+    <div class="v-over" :class="{ hide: this.$store.state.isOver }" @click="overClick"></div>
     <el-container class="home-container">
-      <el-aside :width="isCollapse ? '0' : '256px'">
+      <!-- <el-aside :width="isCollapse ? '0' : '256px'"> -->
+      <el-aside :width="this.$store.state.isCollapse ? '0' : '256px'">
         <div class="header">
           <div class="nav_header_top"></div>
           <div class="nav_header_bottom">
@@ -28,17 +28,9 @@
                           3.在methods中定义方法saveNavState，用于给activePath赋值当前的路由路径
                           4.在create初始中给this.activePath赋当前激活链接的状态值值
           -->
-        <el-menu
-          default-active="1-4-1"
-          class="left-nav"
-          background-color="#242663"
-          text-color="#fff"
-          :collapse="isCollapse"
-          :collapse-transition="false"
-          active-text-color="#409EFF"
-          unique-opened
-        >
-          <el-menu-item index="1">
+        <el-menu class="left-nav" background-color="#242663" text-color="#fff" :collapse="this.$store.state.isCollapse"
+          :collapse-transition="false" router active-text-color="#409EFF" unique-opened :default-active="activePath">
+          <el-menu-item index="/home">
             <i class="el-icon-menu"></i>
             <span slot="title">首页</span>
           </el-menu-item>
@@ -48,8 +40,9 @@
               <span slot="title">技术栈</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
+              <!-- <el-menu-item index="/vue-study" @click="saveNavState('/vue-study')">vueStudy</el-menu-item> -->
+              <el-menu-item index="/vue-study">vueStudy</el-menu-item>
+              <el-menu-item index="/amap-study">高德地图api</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-menu-item index="3">
@@ -64,148 +57,181 @@
       </el-aside>
 
       <el-main>
-        <router-view @toggle="toggleCollapse"></router-view>
+        <div class="main-box">
+          <!-- <router-view @toggle="toggleCollapse"></router-view> -->
+          <router-view></router-view>
+        </div>
       </el-main>
     </el-container>
   </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      isCollapse: true,
-      isOver: true
-    };
-  },
-  methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+  export default {
+    data() {
+      return {
+        //isCollapse: true,
+        //isOver: true,
+        activePath: ''
+      };
     },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+
+    created() {
+      this.activePath = window.sessionStorage.getItem('activePath')
     },
-    toggleCollapse(isover) {
-      this.isCollapse = !this.isCollapse;
-      this.isOver = isover;
+
+    computed: {
+
     },
-    overClick() {
-      this.isCollapse = !this.isCollapse;
-      this.isOver = !this.isOver//这里的isOver定义为全局变量了，但不推荐使用这种方法
+    methods: {
+      handleOpen(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      handleClose(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      toggleCollapse(isover) {
+        //this.isCollapse = !this.isCollapse;
+        this.$store.commit('changeIsCollapse')
+        //this.isOver = isover;
+        this.$store.commit('changeIsOver')
+      },
+      overClick() {
+        //this.isCollapse = !this.isCollapse;
+        this.$store.commit('changeIsCollapse')
+        //this.isOver = !this.isOver //这里的isOver定义为全局变量了，但不推荐使用这种方法
+        this.$store.commit('changeIsOver')
+      },
+
+      // saveNavState(activePath) {
+      //   //activePath是方法传入的当前激活链接的值
+      //   //将值保存到window.sessionStorage
+      //   //setItem用来 保存数据
+      //   //activePath保存的是当前被激活的连接地址
+      //   window.sessionStorage.setItem('activePath', activePath)
+      //   this.activePath = activePath
+      // }
     },
-  },
-};
+  };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
-.home-main {
-  width: 100%;
-  height: 100vh;
-  min-width: 800px;
-  background-color: #f4f4f4;
-
-  .v-over {
-    z-index: 998;
+  .home-main {
     width: 100%;
-    height: 100%;
-    background-color: rgba(33, 33, 33, 0.46);
-    border-color: rgba(33, 33, 33, 0.46);
-    position: absolute;
-    top: 0;
-  }
+    //height: 100vh;
+    min-width: 800px;
+    background-color: #f4f4f4;
 
-  .hide {
-    display: none;
-  }
-
-  .home-container {
-    width: 100%;
-    height: 100%;
-
-    .el-header {
-      background-color: #f4f4f4;
-      color: #333;
-      text-align: center;
-      line-height: 60px;
-    }
-
-    .el-header {
-      .toggle-button {
-        color: #eee;
-        width: 20px;
-        text-align: right;
-        padding-right: 5px;
-        height: 100%;
-        vertical-align: middle;
-        font-size: 20px;
-        position: absolute;
-        right: 20px;
-      }
-    }
-
-    .el-aside {
-      background-color: #1a1d53;
-      color: #333;
+    .v-over {
+      z-index: 998;
+      width: 100%;
       height: 100%;
-      text-align: left;
-      position: absolute;
+      background-color: rgba(33, 33, 33, 0.46);
+      border-color: rgba(33, 33, 33, 0.46);
+      position: fixed;
       top: 0;
-      z-index: 999;
-      transition-duration: 0.2s;
+    }
 
-      .header {
-        height: 268px;
-        background: #1a1d53;
+    .hide {
+      display: none;
+    }
 
-        .nav_header_top {
-          height: 50px;
+    .home-container {
+      width: 100%;
+      //height: 100%;
+
+      .el-header {
+        background-color: #f4f4f4;
+        color: #333;
+        text-align: center;
+        line-height: 60px;
+      }
+
+      .el-header {
+        .toggle-button {
+          color: #eee;
+          width: 20px;
+          text-align: right;
+          padding-right: 5px;
+          height: 100%;
+          vertical-align: middle;
+          font-size: 20px;
+          position: absolute;
+          right: 20px;
         }
+      }
 
-        .nav_header_bottom {
-          padding: 10px 0;
-          .nav_header_img {
-            text-align: center;
+      .el-aside {
+        background-color: #1a1d53;
+        color: #333;
+        height: 100%;
+        text-align: left;
+        position: fixed;
+        top: 0;
+        z-index: 999;
+        transition-duration: 0.2s;
 
-            img {
-              width: 100px;
-              border-radius: 50%;
+        .header {
+          height: 268px;
+          background: #1a1d53;
+
+          .nav_header_top {
+            height: 50px;
+          }
+
+          .nav_header_bottom {
+            padding: 10px 0;
+
+            .nav_header_img {
+              text-align: center;
+
+              img {
+                width: 100px;
+                border-radius: 50%;
+              }
+            }
+
+            .nav_header_name {
+              color: rgb(255, 255, 255);
+              font-weight: bold;
+              text-align: center;
             }
           }
+        }
 
-          .nav_header_name {
-            color: rgb(255, 255, 255);
-            font-weight: bold;
-            text-align: center;
-          }
+        .el-radio-group {
+          margin-bottom: 0 !important;
+        }
+
+        .el-menu {
+          padding-top: 30px;
+          width: 100%;
+          height: calc(~"100% - 268px");
+          border-right: none;
+          border-radius: 30px 30px 0 0;
         }
       }
-      .el-radio-group {
-        margin-bottom: 0 !important;
+
+      .el-main {
+        background-color: #f4f4f4;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        padding: 0;
+
+        .main-box {
+          width: 100%;
+        }
+
+
       }
 
-      .el-menu {
-        padding-top: 30px;
-        width: 100%;
-        height: calc(~"100% - 268px");
-        border-right: none;
-        border-radius: 30px 30px 0 0;
+      body>.el-container {
+        margin-bottom: 40px;
       }
-    }
-
-    .el-main {
-      background-color: #f4f4f4;
-      color: #333;
-      display: flex;
-      justify-content: center;
-      padding: 0;
-
-      
-    }
-
-    body > .el-container {
-      margin-bottom: 40px;
     }
   }
-}
 </style>
